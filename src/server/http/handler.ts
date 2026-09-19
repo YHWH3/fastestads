@@ -45,7 +45,7 @@ function json(
 }
 
 /**
- * `POST /api/semantic` — validates, rate-limits, calls Jev once, returns the
+ * `POST /api/semantic/` — validates, rate-limits, calls Jev once, returns the
  * typed SemanticResult. Paths and finalUrl are never sent upstream.
  */
 export async function handleSemanticRequest(

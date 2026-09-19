@@ -7,6 +7,7 @@ import type { AnalysisReport, SemanticSlice } from '@core/aggregate/types';
 import { FieldList } from './FieldList';
 import { Results, type UiState } from './Results';
 import { track } from './analytics';
+import { SEMANTIC_ENDPOINT } from '../lib/routes';
 
 interface Fields {
   headlines: string[];
@@ -166,7 +167,7 @@ export function AdChecker() {
     };
 
     try {
-      const res = await fetch('/api/semantic', {
+      const res = await fetch(SEMANTIC_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

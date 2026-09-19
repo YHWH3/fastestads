@@ -4,7 +4,7 @@
   "description": "Fast checks for ad copy quality and platform fit.",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro check && astro build",
+    "build": "astro check && astro build && rm -f dist/server/.dev.vars dist/server/.prerender/.dev.vars",
     "preview": "astro preview",
     "test": "vitest run",
     "test:watch": "vitest",

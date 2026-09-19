@@ -8,7 +8,7 @@ import { googleAdsRsa } from '@core/platforms/google-ads';
 import { buildSemanticRequest } from '@core/semantic/request';
 import { mockAnswers } from '../helpers/mockAnswers';
 
-const URL = 'https://fastestads.com/api/semantic';
+const URL = 'https://fastestads.com/api/semantic/';
 const SECRET_HEADLINE = 'Zebra Quietly Sells 9f8d Widgets';
 
 const VALID_BODY = {

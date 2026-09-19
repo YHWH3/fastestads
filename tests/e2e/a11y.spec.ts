@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { AxeBuilder } from '@axe-core/playwright';
 import { okSemanticResult, noul, waitForHydration } from './helpers';
+import { SEMANTIC_ENDPOINT } from '../../src/lib/routes';
 
 const TOOL = '/tools/google-ads-headline-checker/';
 
@@ -20,7 +21,7 @@ test('a11y: tool page idle has no serious violations', async ({ page }) => {
 });
 
 test('a11y: tool page after analysis has no serious violations', async ({ page }) => {
-  await page.route('**/api/semantic', async (route) => {
+  await page.route(`**${SEMANTIC_ENDPOINT}`, async (route) => {
     await route.fulfill({
       status: 200,
       contentType: 'application/json',

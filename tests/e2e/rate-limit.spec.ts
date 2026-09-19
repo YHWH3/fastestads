@@ -1,10 +1,11 @@
 import { test, expect } from '@playwright/test';
 import { waitForHydration } from './helpers';
+import { SEMANTIC_ENDPOINT } from '../../src/lib/routes';
 
 const TOOL = '/tools/google-ads-headline-checker/';
 
 test('429 from the API shows the rate-limited state', async ({ page }) => {
-  await page.route('**/api/semantic', async (route) => {
+  await page.route(`**${SEMANTIC_ENDPOINT}`, async (route) => {
     await route.fulfill({
       status: 429,
       contentType: 'application/json',

@@ -20,6 +20,17 @@ pnpm build
 wrangler deploy
 ```
 
+The build strips `dist/server/.dev.vars` at the end — wrangler copies it there during the build so
+prerendering can read bindings, and leaving it in place would ship the secret inside the build
+output. `pnpm test:build` asserts no `.dev.vars` value survives in `dist`. To run a local preview
+with live Jev calls, copy it back after building:
+
+```bash
+pnpm build && cp .dev.vars dist/server/.dev.vars && pnpm preview
+```
+
+(Or use `pnpm live:jev`, which reads `.dev.vars` directly and exercises the real API once.)
+
 ## Production hardening
 
 For the production `fastestads.com` service:
@@ -53,4 +64,4 @@ integrated** — the slots are placeholders, not an ad-network integration.
 | `TYPESAFE_API_KEY` | `wrangler secret` / `.dev.vars` | `src/server/jev/client.ts` `Authorization` header |
 
 There are no other credentials. `pnpm test:build` asserts no secret value or upstream URL reaches
-`dist/client`.
+`dist`.

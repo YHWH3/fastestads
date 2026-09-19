@@ -225,7 +225,7 @@ Best practice (`best_practice`, info): `headline.utilization.low` (< 8 non-empty
 
 ## 7. API (Phase 2)
 
-`POST /api/semantic` — JSON `{ platform, format, headlines[], descriptions[], keyword? }`. Paths/final URL are not sent (not needed for semantics; privacy). Limits: ≤ 15 headlines ≤ 200 chars, ≤ 4 descriptions ≤ 400 chars, keyword ≤ 120 chars, body ≤ 8 KB. 405 for non-POST; 415 for non-JSON; 400 on schema failure; 403 when `Sec-Fetch-Site` is present and not `same-origin`/`none`; 429 from our rate limiter (Retry-After); 503 JSON `{status:'unavailable', reason}` on upstream failure. All responses `Cache-Control: no-store`, `X-Robots-Tag: noindex`. Duplicate-request suppression: in-isolate LRU (≤ 200 entries, 10 min TTL) keyed by SHA-256 of the canonical payload. Structured JSON logs carry request id, latency, status, model, question count — never text.
+`POST /api/semantic/` (canonical trailing-slash URL; `/api/semantic` 308-redirects here under `trailingSlash: 'always'`) — JSON `{ platform, format, headlines[], descriptions[], keyword? }`. Paths/final URL are not sent (not needed for semantics; privacy). Limits: ≤ 15 headlines ≤ 200 chars, ≤ 4 descriptions ≤ 400 chars, keyword ≤ 120 chars, body ≤ 8 KB. 405 for non-POST; 415 for non-JSON; 400 on schema failure; 403 when `Sec-Fetch-Site` is present and not `same-origin`/`none`; 429 from our rate limiter (Retry-After); 503 JSON `{status:'unavailable', reason}` on upstream failure. All responses `Cache-Control: no-store`, `X-Robots-Tag: noindex`. Duplicate-request suppression: in-isolate LRU (≤ 200 entries, 10 min TTL) keyed by SHA-256 of the canonical payload. Structured JSON logs carry request id, latency, status, model, question count — never text.
 
 ## 8. UI states (Phase 2)
 

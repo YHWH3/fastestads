@@ -6,7 +6,7 @@ import { buildSemanticRequest } from '../../src/core/semantic/request';
 import type { AdInput } from '../../src/core/platform/types';
 import { mockAnswers, noul } from '../helpers/mockAnswers';
 
-/** Builds an `ok` /api/semantic response body for the example ad. */
+/** Builds an `ok` /api/semantic/ response body for the example ad. */
 export function okSemanticResult(overrides: Record<string, JevAnswer> = {}): SemanticResult {
   const input: AdInput = {
     platform: 'google-ads',

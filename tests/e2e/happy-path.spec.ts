@@ -1,10 +1,15 @@
 import { test, expect } from '@playwright/test';
 import { okSemanticResult, noul, waitForHydration } from './helpers';
+import { SEMANTIC_ENDPOINT } from '../../src/lib/routes';
 
 const TOOL = '/tools/google-ads-headline-checker/';
 
 test('happy path: example ad analyzes and renders semantic results', async ({ page }) => {
-  await page.route('**/api/semantic', async (route) => {
+  const apiCalls: string[] = [];
+  page.on('request', (r) => {
+    if (r.url().includes('/api/semantic')) apiCalls.push(r.url());
+  });
+  await page.route(`**${SEMANTIC_ENDPOINT}`, async (route) => {
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
@@ -33,4 +38,9 @@ test('happy path: example ad analyzes and renders semantic results', async ({ pa
   const copyBtn = page.getByRole('button', { name: 'Copy' }).first();
   await copyBtn.click();
   await expect(page.getByRole('button', { name: 'Copied' }).first()).toBeVisible();
+
+  // Exactly one semantic request, at the canonical trailing-slash URL — no
+  // redirect hop from `/api/semantic` → `/api/semantic/`.
+  expect(apiCalls).toHaveLength(1);
+  expect(apiCalls[0]).toContain(SEMANTIC_ENDPOINT);
 });

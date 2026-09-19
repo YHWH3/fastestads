@@ -73,10 +73,17 @@ test.describe('SEO gates', () => {
     expect(sitemap).not.toContain('/404');
   });
 
-  test('GET /api/semantic is 405 with X-Robots-Tag: noindex', async ({ request }) => {
-    const res = await request.get('/api/semantic');
+  test('GET /api/semantic/ is 405 with X-Robots-Tag: noindex', async ({ request }) => {
+    const res = await request.get('/api/semantic/');
     expect(res.status()).toBe(405);
     expect(res.headers()['x-robots-tag']).toBe('noindex');
+  });
+
+  test('bare /api/semantic redirects to the canonical trailing-slash URL', async ({ request }) => {
+    const res = await request.get('/api/semantic', { maxRedirects: 0 });
+    expect(res.status()).toBeGreaterThanOrEqual(300);
+    expect(res.status()).toBeLessThan(400);
+    expect(res.headers()['location']).toMatch(/\/api\/semantic\/$/);
   });
 
   test('non-trailing-slash tool URL redirects to canonical', async ({ request }) => {
