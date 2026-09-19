@@ -6,6 +6,7 @@ const KEYWORD_REF = { field: 'keyword' as const, index: 0 };
 
 const keywordMissingInHeadlines = defineRule({
   id: 'keyword.missing_in_headlines',
+  label: 'Keyword phrase missing from headlines',
   kind: 'keyword',
   severity: 'warning',
   source: SOURCES.rsaSpec,
@@ -33,6 +34,7 @@ const keywordMissingInHeadlines = defineRule({
 
 const keywordTermsMissing = defineRule({
   id: 'keyword.terms_missing',
+  label: 'Keyword terms coverage',
   kind: 'keyword',
   severity: 'info',
   source: SOURCES.rsaSpec,
@@ -57,6 +59,7 @@ const keywordTermsMissing = defineRule({
 
 const keywordStuffing = defineRule({
   id: 'keyword.stuffing',
+  label: 'Keyword stuffing',
   kind: 'keyword',
   severity: 'warning',
   source: SOURCES.rsaSpec,

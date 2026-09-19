@@ -237,10 +237,30 @@ Routes: `/` (home: what FastestAds is + tool cards), `/tools/` (hub), `/tools/go
 
 ## 10. Environment variables
 
-| Name                     | Where                                               | Purpose                                             |
-| ------------------------ | --------------------------------------------------- | --------------------------------------------------- |
-| `TYPESAFE_API_KEY`       | secret (`wrangler secret put`, `.dev.vars` locally) | Jev auth. Never public.                             |
-| `TYPESAFE_BASE_URL`      | var, optional                                       | default `https://api.typesafe.ai`                   |
-| `TYPESAFE_MODEL`         | var, optional                                       | default `jev-latest`                                |
-| `SITE_URL`               | var                                                 | canonical origin, e.g. `https://fastestads.com`     |
-| `PUBLIC_CF_BEACON_TOKEN` | var, optional                                       | Cloudflare Web Analytics; analytics off when absent |
+| Name                     | Where                                               | Purpose                                                  |
+| ------------------------ | --------------------------------------------------- | -------------------------------------------------------- |
+| `TYPESAFE_API_KEY`       | secret (`wrangler secret put`, `.dev.vars` locally) | Jev auth. Never public.                                  |
+| `TYPESAFE_BASE_URL`      | var, optional                                       | default `https://api.typesafe.ai`                        |
+| `TYPESAFE_MODEL`         | var, optional                                       | default `jev-latest`                                     |
+| `SITE_URL`               | var                                                 | canonical origin, e.g. `https://fastestads.com`          |
+| `PUBLIC_CF_BEACON_TOKEN` | var, optional                                       | Cloudflare Web Analytics; analytics off when absent      |
+| `PUBLIC_ADS_ENABLED`     | var, optional                                       | `'true'` renders ad-slot containers (CMP required first) |
+
+## 11. Deviations from this document (implementation notes)
+
+Recorded where the shipped implementation differs from or refines the design above:
+
+- **Fractional Jev scores accepted** — Score answers are probability-weighted and can land
+  between levels (e.g. `1.6`); `parseAnswers` validates finite + range, not integers.
+- **`semantic.cta_weak` suppression** — suppressed only for the `weak`→warning case when
+  `cta.none_detected` already fired; the `needs_work` info may still emit.
+- **Cache-hit status** — cached responses return the stored `result.status` (`ok` or `partial`)
+  rather than a literal `'ok'`.
+- **`Rule.label`** — every rule carries a short human label so the tool page can render the rule
+  registry without duplicating names.
+- **`isEmoji` keycap extension** — U+20E3 keycap detection added because the runtime's ICU does
+  not classify bare `0-9`/`#`/`*` as `Extended_Pictographic`.
+- **Robots on non-canonical hosts** — `robots.txt` itself serves disallow-all on any non-`SITE_URL`
+  host (workers.dev previews, local preview), in addition to the `X-Robots-Tag` header.
+- **TypeScript 6.0.3** — pinned below 7 because `typescript-eslint`/`@astrojs/check` peer ranges
+  cap at `<6.1.0`.

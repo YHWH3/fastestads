@@ -1,0 +1,88 @@
+---
+import Base from '../../layouts/Base.astro';
+import { breadcrumbJsonLd } from '../../lib/seo';
+
+const title = 'Privacy policy — FastestAds';
+const description =
+  'How FastestAds handles your data: ad copy is processed in memory, never stored or logged, and no account or tracking cookies are used.';
+const breadcrumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Privacy', path: '/privacy/' },
+];
+---
+
+<Base
+  title={title}
+  description={description}
+  canonicalPath="/privacy/"
+  jsonLd={[breadcrumbJsonLd(breadcrumbs)]}
+>
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <ol>
+      <li>
+        <a href="/">Home</a>
+      </li>
+      <li aria-current="page">Privacy</li>
+    </ol>
+  </nav>
+  <article class="prose">
+    <h1>Privacy policy</h1>
+    <p>
+      <em>Effective date: 2026-09-19.</em>
+    </p>
+
+    <h2>What you submit and where it goes</h2>
+    <p>
+      When you run the checker, your headlines, descriptions and optional target search query are
+      evaluated twice. Deterministic rule checks run in your browser and on our Cloudflare Worker.
+      The optional semantic evaluation sends only your headlines, descriptions and target query —
+      never display paths or your final URL — from our Worker to TypeSafe's Jev service, which acts
+      as our processor. See{' '}
+      <a href="https://docs.typesafe.ai/legal" rel="noopener noreferrer">
+        TypeSafe's legal documentation
+      </a>
+      .
+    </p>
+
+    <h2>What we do not do</h2>
+    <ul>
+      <li>
+        We do not store, log or persist your ad copy anywhere — it exists only in memory while a
+        request is processed.
+      </li>
+      <li>We do not require accounts, email addresses or any personal information.</li>
+      <li>We do not set cookies.</li>
+      <li>
+        Our server logs record request metadata only — request id, latency, status and question
+        count — never ad text.
+      </li>
+      <li>Analytics events contain rule ids and counts only, never ad copy.</li>
+    </ul>
+
+    <h2>Draft persistence</h2>
+    <p>
+      The tool keeps your in-progress form in your browser's sessionStorage so a reload doesn't lose
+      your work. This data is tab-scoped, never sent anywhere, and disappears when you close the tab
+      or press Reset.
+    </p>
+
+    <h2>Analytics</h2>
+    <p>
+      When enabled on a deployment, we use Cloudflare Web Analytics, which is cookie-less and does
+      not collect personal data or track you across sites. It measures page views and performance
+      only. Deployments where it is disabled collect no analytics at all.
+    </p>
+
+    <h2>Infrastructure</h2>
+    <p>
+      The site is served by Cloudflare Workers. Requests necessarily transit Cloudflare's network,
+      which may process standard connection metadata (IP address, user agent) to deliver the
+      response.
+    </p>
+
+    <h2>Contact</h2>
+    <p>
+      Questions about this policy can be raised through the FastestAds repository's issue tracker.
+    </p>
+  </article>
+</Base>

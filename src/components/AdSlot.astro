@@ -1,0 +1,19 @@
+---
+import { PUBLIC_ADS_ENABLED } from 'astro:env/client';
+
+interface Props {
+  slot: 'below-results' | 'end-of-content';
+}
+
+const { slot } = Astro.props;
+
+// Renders a reserved ad container ONLY when PUBLIC_ADS_ENABLED === 'true'.
+// Before enabling ads in production, a consent-management platform (CMP) that
+// covers ad personalization must be wired up — see docs/DEPLOYMENT.md.
+const enabled = PUBLIC_ADS_ENABLED === 'true';
+const minHeight = slot === 'below-results' ? '90px' : '250px';
+---
+
+{enabled && (
+  <div class="ad-slot" data-slot={slot} aria-hidden="true" style={`min-height: ${minHeight}`} />
+)}

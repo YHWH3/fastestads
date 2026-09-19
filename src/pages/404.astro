@@ -1,0 +1,28 @@
+---
+import Base from '../layouts/Base.astro';
+import { liveTools } from '../core/tools/registry';
+
+const tool = liveTools()[0];
+---
+
+<Base
+  title="Page not found — FastestAds"
+  description="The page you were looking for does not exist."
+  robots="noindex"
+>
+  <h1>Page not found</h1>
+  <p>The page you were looking for doesn't exist or has moved.</p>
+  <ul>
+    <li>
+      <a href="/">FastestAds home</a>
+    </li>
+    {tool?.path && (
+      <li>
+        <a href={tool.path}>{tool.name}</a>
+      </li>
+    )}
+    <li>
+      <a href="/tools/">All tools</a>
+    </li>
+  </ul>
+</Base>

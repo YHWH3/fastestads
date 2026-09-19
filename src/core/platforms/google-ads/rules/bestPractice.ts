@@ -63,6 +63,7 @@ function hasCta(texts: string[]): boolean {
 
 const headlineUtilizationLow = defineRule({
   id: 'headline.utilization.low',
+  label: 'Headline utilization',
   kind: 'best_practice',
   severity: 'info',
   source: SOURCES.rsaSpec,
@@ -88,6 +89,7 @@ const headlineUtilizationLow = defineRule({
 
 const descriptionUtilizationLow = defineRule({
   id: 'description.utilization.low',
+  label: 'Description utilization',
   kind: 'best_practice',
   severity: 'info',
   source: SOURCES.rsaSpec,
@@ -112,6 +114,7 @@ const descriptionUtilizationLow = defineRule({
 
 const ctaNoneDetected = defineRule({
   id: 'cta.none_detected',
+  label: 'Call to action present',
   kind: 'best_practice',
   severity: 'warning',
   source: SOURCES.rsaSpec,

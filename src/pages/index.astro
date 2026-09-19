@@ -1,18 +1,39 @@
 ---
-// Placeholder home page — full SEO shell lands in Phase 3.
-const title = 'FastestAds';
+import Base from '../layouts/Base.astro';
+import { liveTools, TOOLS } from '../core/tools/registry';
+import { organizationJsonLd, websiteJsonLd } from '../lib/seo';
+
+const live = liveTools();
+const planned = TOOLS.filter((t) => t.status === 'planned');
+const title = 'FastestAds — Fast, private checks for ad copy';
+const description =
+  'Free advertising tools that answer the question immediately — starting with a Google Ads headline and ad copy checker. No sign-up, nothing stored.';
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title}</title>
-  </head>
-  <body>
-    <main>
-      <h1>{title}</h1>
-      <p>Fast checks for ad copy. Google Ads headline checker coming soon.</p>
-    </main>
-  </body>
-</html>
+<Base
+  title={title}
+  description={description}
+  canonicalPath="/"
+  jsonLd={[websiteJsonLd(), organizationJsonLd()]}
+>
+  <h1>FastestAds</h1>
+  <p class="lead">
+    Advertising tools that answer the question immediately: paste your copy, get platform-rule
+    checks and an honest quality review in seconds. Free, no sign-up, nothing stored.
+  </p>
+
+  <h2>Tools</h2>
+  <ul class="tool-cards">
+    {live.map((tool) => (
+      <li>
+        <a class="tool-card" href={tool.path}>
+          <h3>{tool.name}</h3>
+          <p>{tool.description}</p>
+        </a>
+      </li>
+    ))}
+  </ul>
+
+  <h2>Coming next</h2>
+  <p>{planned.map((t) => t.name).join(' · ')}</p>
+</Base>

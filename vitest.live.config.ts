@@ -1,6 +1,7 @@
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vitest/config';
 
+// Live smoke against the real Jev API — run via `pnpm live:jev` (LIVE_JEV=1).
 export default defineConfig({
   resolve: {
     alias: {
@@ -10,8 +11,8 @@ export default defineConfig({
     },
   },
   test: {
-    include: ['tests/**/*.test.ts'],
-    exclude: ['tests/build/**', 'tests/e2e/**', 'tests/live/**', '**/node_modules/**'],
+    include: ['tests/live/**/*.test.ts'],
     environment: 'node',
+    testTimeout: 30_000,
   },
 });

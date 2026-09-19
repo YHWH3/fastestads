@@ -224,7 +224,10 @@ export function AdChecker() {
     }
   };
 
-  const announceComplete = (issueCount: number | null, det: ReturnType<typeof runDeterministic>) => {
+  const announceComplete = (
+    issueCount: number | null,
+    det: ReturnType<typeof runDeterministic>,
+  ) => {
     setAnnouncement((prev) => {
       if (prev === 'Semantic evaluation unavailable — deterministic results shown.') return prev;
       const n = issueCount === null || issueCount < 0 ? det.issues.length : issueCount;

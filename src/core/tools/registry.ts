@@ -12,6 +12,14 @@ export interface ToolDefinition {
   category: ToolCategory;
   platform?: Platform;
   status: ToolStatus;
+  /** Canonical route path with trailing slash. Required for live tools. */
+  path?: string;
+  /** Page title/description for SEO. Required for live tools. */
+  seo?: { title: string; description: string };
+  /** Visible breadcrumb items (last item = current page, no path needed). */
+  breadcrumb?: Array<{ label: string; path?: string }>;
+  /** Editorial metadata for the content on the tool page. */
+  content?: { lastReviewed: string };
   /** Slugs of related tools. */
   related: string[];
   sources?: SourceRef[];
@@ -27,6 +35,18 @@ export const TOOLS: readonly ToolDefinition[] = [
     category: 'copy-checker',
     platform: 'google-ads',
     status: 'live',
+    path: '/tools/google-ads-headline-checker/',
+    seo: {
+      title: 'Google Ads Headline Checker — Free RSA Copy Check',
+      description:
+        'Check Google Ads headlines and descriptions against RSA limits and editorial rules, with a semantic quality review. Free, private, no sign-up.',
+    },
+    breadcrumb: [
+      { label: 'Home', path: '/' },
+      { label: 'Tools', path: '/tools/' },
+      { label: 'Headline Checker' },
+    ],
+    content: { lastReviewed: '2026-09-19' },
     related: [
       'responsive-search-ad-checker',
       'google-ads-description-checker',
@@ -114,4 +134,11 @@ export function liveTools(): ToolDefinition[] {
 
 export function getTool(slug: string): ToolDefinition | undefined {
   return BY_SLUG.get(slug);
+}
+
+/** Related tools that are live — planned tools are never linked. */
+export function relatedLive(tool: ToolDefinition): ToolDefinition[] {
+  return tool.related
+    .map((slug) => BY_SLUG.get(slug))
+    .filter((t): t is ToolDefinition => t !== undefined && t.status === 'live');
 }

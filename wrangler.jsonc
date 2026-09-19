@@ -8,6 +8,10 @@
     "TYPESAFE_BASE_URL": "https://api.typesafe.ai",
     "TYPESAFE_MODEL": "jev-latest",
   },
+  // Canonical URLs always end in '/'; the bare form must 308, not 200.
+  "assets": {
+    "html_handling": "auto-trailing-slash",
+  },
   "ratelimits": [
     {
       "name": "SEMANTIC_RATE_LIMITER",

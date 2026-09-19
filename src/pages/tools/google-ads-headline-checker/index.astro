@@ -1,24 +1,331 @@
 ---
+import Base from '../../../layouts/Base.astro';
+import AdSlot from '../../../components/AdSlot.astro';
 import { AdChecker } from '../../../ui/AdChecker';
+import { getTool, relatedLive } from '../../../core/tools/registry';
+import { googleAdsRsa, LAST_VERIFIED } from '../../../core/platforms/google-ads';
+import { THRESHOLDS } from '../../../core/semantic/bands';
+import type { IssueKind, Severity } from '../../../core/platform/types';
+import { breadcrumbJsonLd, softwareApplicationJsonLd, toolMeta } from '../../../lib/seo';
 import '../../../styles/tool.css';
 
-const title = 'Google Ads Headline & Ad Copy Checker';
+const tool = getTool('google-ads-headline-checker');
+if (!tool) throw new Error('tool registry entry missing');
+const meta = toolMeta(tool);
+const related = relatedLive(tool);
+const fields = googleAdsRsa.fields;
+
+const KIND_LABEL: Record<IssueKind, string> = {
+  platform_limit: 'Platform limits',
+  editorial_indicator: 'Editorial indicators',
+  structure: 'Structure & duplication',
+  keyword: 'Keyword coverage',
+  best_practice: 'Best practices',
+  semantic: 'Semantic',
+};
+
+const SEVERITY_LABEL: Record<Severity, string> = {
+  error: 'Error',
+  warning: 'Warning',
+  info: 'Info',
+};
+
+const rulesByKind = new Map<IssueKind, typeof googleAdsRsa.rules>();
+for (const rule of googleAdsRsa.rules) {
+  const list = rulesByKind.get(rule.kind) ?? [];
+  list.push(rule);
+  rulesByKind.set(rule.kind, list);
+}
+
+const QUESTION_MEANINGS: Array<[string, string]> = [
+  ['clarity_offer', 'How clearly the offer is understandable'],
+  ['value_proposition', 'Whether a concrete reason to choose this advertiser exists'],
+  ['specificity', 'How specific and concrete the wording is'],
+  ['cta_clarity', 'Whether a clear next step is stated'],
+  ['headline_complementarity', 'Whether the headlines cover different angles'],
+  ['hype', 'Whether the copy relies on exaggerated language'],
+  ['unsupported_claims', 'Whether claims would normally need substantiation'],
+  ['primary_language', 'The primary language of the copy'],
+  ['topic_match', 'Whether the ad addresses the query topic'],
+  ['intent_match', 'Whether the ad addresses likely searcher intent'],
+  ['audience_alignment', 'Whether the ad matches the query audience'],
+  ['vague_H{n}', 'Whether a single headline is vague'],
+  ['redundant_Ha_Hb', 'Whether two headlines say the same thing'],
+];
+
+const jsonLd = [
+  softwareApplicationJsonLd(tool),
+  breadcrumbJsonLd([
+    { name: 'Home', path: '/' },
+    { name: 'Tools', path: '/tools/' },
+    { name: 'Headline Checker', path: tool.path! },
+  ]),
+];
+
+const breadcrumbs = tool.breadcrumb ?? [];
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta
-      name="description"
-      content="Check Google Ads headlines and ad copy against RSA limits, editorial policies, and best practices."
-    />
-    <title>{title} · FastestAds</title>
-  </head>
-  <body>
-    <main>
-      <h1>{title}</h1>
-      <AdChecker client:load />
-    </main>
-  </body>
-</html>
+<Base title={meta.title} description={meta.description} canonicalPath={tool.path} jsonLd={jsonLd}>
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <ol>
+      {breadcrumbs.map((item, i) => (
+        <li aria-current={i === breadcrumbs.length - 1 ? 'page' : undefined}>
+          {item.path && i < breadcrumbs.length - 1 ? (
+            <a href={item.path}>{item.label}</a>
+          ) : (
+            item.label
+          )}
+        </li>
+      ))}
+    </ol>
+  </nav>
+
+  <h1>Google Ads Headline &amp; Ad Copy Checker</h1>
+  <p class="lead">
+    Paste your responsive search ad, add an optional target search query, and get Google Ads limit
+    checks plus a semantic review in seconds. Free, no sign-up, nothing stored.
+  </p>
+
+  <AdChecker client:load />
+
+  <AdSlot slot="below-results" />
+
+  <article class="prose">
+    <section>
+      <h2>What this checker does</h2>
+      <p>
+        This tool runs three layers of analysis on a draft responsive search ad. Deterministic
+        checks verify Google's published field limits, count requirements and editorial rules
+        exactly as documented. Structural analysis looks for duplicate assets, weak keyword coverage
+        and missing calls to action. An optional semantic evaluation by TypeSafe's Jev model then
+        judges clarity, specificity and search-intent fit as typed probabilities converted to bands.
+      </p>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Platform rules</th>
+              <th scope="col">Deterministic checks</th>
+              <th scope="col">Semantic evaluation</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Field limits, counts, editorial indicators from Google's documentation</td>
+              <td>Duplicates, keyword coverage, call to action, utilization</td>
+              <td>Jev judgments on clarity, specificity, intent and audience fit</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>How to use it</h2>
+      <ol>
+        <li>
+          Paste or type your headlines — add up to {fields.headline.max}, or use "Paste headlines"
+          to split one per line.
+        </li>
+        <li>
+          Add {fields.description.min}–{fields.description.max} descriptions.
+        </li>
+        <li>Optionally add display paths, a final URL and a target search query.</li>
+        <li>Press "Analyze ad" — rule results appear immediately.</li>
+        <li>Review the semantic evaluation when it finishes, or retry it if unavailable.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Google Ads responsive search ad limits</h2>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Asset</th>
+              <th scope="col">Required</th>
+              <th scope="col">Maximum</th>
+              <th scope="col">Characters each</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Headlines</td>
+              <td>{fields.headline.min}</td>
+              <td>{fields.headline.max}</td>
+              <td>{fields.headline.maxChars}</td>
+            </tr>
+            <tr>
+              <td>Descriptions</td>
+              <td>{fields.description.min}</td>
+              <td>{fields.description.max}</td>
+              <td>{fields.description.maxChars}</td>
+            </tr>
+            <tr>
+              <td>Display paths</td>
+              <td>{fields.path.min}</td>
+              <td>{fields.path.max}</td>
+              <td>{fields.path.maxChars}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Double-width characters (CJK text, emoji and full-width forms) count as 2 characters toward
+        each limit — the same convention the Google Ads interface uses.
+      </p>
+      <p>
+        Verified against{' '}
+        <a href={googleAdsRsa.sources.rsaSpec.url} rel="noopener noreferrer">
+          Google's documentation
+        </a>{' '}
+        on {LAST_VERIFIED}.
+      </p>
+    </section>
+
+    <section>
+      <h2>What the deterministic checks look for</h2>
+      <p>
+        Every check below is a rule implemented in code and verified against Google's published
+        limits and editorial policies. Each runs entirely deterministically — the same input always
+        produces the same result.
+      </p>
+      {[...rulesByKind.entries()].map(([kind, rules]) => (
+        <>
+          <h3>{KIND_LABEL[kind]}</h3>
+          <ul>
+            {rules.map((rule) => (
+              <li>
+                {rule.label} <span class="tag">{SEVERITY_LABEL[rule.severity]}</span>
+              </li>
+            ))}
+          </ul>
+        </>
+      ))}
+    </section>
+
+    <section>
+      <h2>What the semantic evaluation judges</h2>
+      <p>
+        The semantic pass asks TypeSafe's Jev model a fixed set of questions about the ad as a whole
+        and about individual headlines:
+      </p>
+      <ul>
+        {QUESTION_MEANINGS.map(([id, meaning]) => (
+          <li>
+            <code>{id}</code> — {meaning}
+          </li>
+        ))}
+      </ul>
+      <p>
+        Answers come back as typed model outputs — probabilities and ordered levels — which this
+        site converts to bands using fixed thresholds (strong ≥ {THRESHOLDS.score.strong}, good ≥{' '}
+        {THRESHOLDS.score.good}, needs work ≥ {THRESHOLDS.score.needsWork} of the level range;
+        flagged ≥ {THRESHOLDS.noul.flagged}, possible ≥ {THRESHOLDS.noul.possible} for yes/no
+        judgments). These judgments are estimates tuned for English copy; they are not calibrated
+        against actual Google approval outcomes.
+      </p>
+    </section>
+
+    <section>
+      <h2>How to read the results</h2>
+      <p>
+        The summary shows <strong>Blocked</strong> when a hard platform limit is violated,{' '}
+        <strong>Needs work</strong> when warnings or weak dimensions remain, and{' '}
+        <strong>Ready</strong> when nothing significant is flagged. Issues carry a severity —
+        <strong>Error</strong> means Google will not accept the ad as written,{' '}
+        <strong>Warning</strong> means it may be flagged or underperform, and <strong>Info</strong>{' '}
+        is a suggestion. Dimension cards show a band from Strong to Weak; "(low confidence)" means
+        the model's own confidence was below {THRESHOLDS.lowConfidence}, so treat that rating
+        cautiously.
+      </p>
+    </section>
+
+    <section>
+      <h2>Common headline mistakes</h2>
+      <ul>
+        <li>Vague filler — "Quality You Can Trust" → "Walnut Shelves, Handmade To Order"</li>
+        <li>
+          Repeating the same idea — "Save On Running Shoes" / "Running Shoes On Sale" → keep one and
+          use the slot for a proof point like "Rated 4.8 By 3,000 Runners"
+        </li>
+        <li>No call to action — "Durable Leather Wallets" → "Order Your Leather Wallet Today"</li>
+        <li>Punctuation stuffing — "BEST DEALS!!!" → "Deals On Seasonal Styles"</li>
+        <li>
+          Unsupported superlatives — "#1 Software In The World" → "Project Tools Trusted By 12,000
+          Teams"
+        </li>
+        <li>Phone numbers in ad text — "Call 555-0134 For A Quote" → "Get A Free Quote Online"</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Keyword and search-intent alignment</h2>
+      <p>
+        Say the target query is "best crm for small business". A headline set of "Powerful Business
+        Software" may contain none of the query's terms — coverage checks flag that — but presence
+        alone is not relevance. Jev separately judges whether the ad speaks to the topic, the likely
+        goal (comparison, in this case), and the audience (small businesses). The inverse mistake is
+        stuffing the phrase into most headlines, which the checker also flags: keep the phrase in
+        one or two assets and let the rest cover benefits, proof and calls to action.
+      </p>
+    </section>
+
+    <section>
+      <h2>Limitations</h2>
+      <p>
+        This tool is not affiliated with Google and cannot guarantee approval or performance.
+        Editorial checks are indicators, not policy determinations. Semantic judgments are
+        estimates, and less accurate for non-English copy. Landing-page quality and account-level
+        factors are not evaluated. Character counts may differ from the Google Ads UI in rare edge
+        cases involving emoji sequences or combining marks.
+      </p>
+    </section>
+
+    <section>
+      <h2>Privacy</h2>
+      <p>
+        Your copy is processed in memory only: deterministic checks run in your browser and on our
+        Worker, and the semantic evaluation sends headlines, descriptions and your target query to
+        TypeSafe's Jev service for evaluation. Nothing is stored or logged, no ad text appears in
+        analytics, and your form draft stays in tab-scoped sessionStorage. Read the{' '}
+        <a href="/privacy/">privacy policy</a>.
+      </p>
+    </section>
+
+    <section>
+      <h2>Sources</h2>
+      <ul>
+        {Object.values(googleAdsRsa.sources).map((source) => (
+          <li>
+            <a href={source.url} rel="noopener noreferrer">
+              {source.label}
+            </a>{' '}
+            — verified {source.lastVerified}
+          </li>
+        ))}
+      </ul>
+      <p>Page content last reviewed {tool.content?.lastReviewed}.</p>
+    </section>
+  </article>
+
+  <AdSlot slot="end-of-content" />
+
+  <section aria-labelledby="related-tools">
+    <h2 id="related-tools">Related tools</h2>
+    {related.length > 0 ? (
+      <ul class="tool-cards">
+        {related.map((t) => (
+          <li>
+            <a class="tool-card" href={t.path}>
+              <h3>{t.name}</h3>
+              <p>{t.description}</p>
+            </a>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p>More FastestAds tools are in development.</p>
+    )}
+  </section>
+</Base>

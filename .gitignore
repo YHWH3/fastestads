@@ -5,3 +5,6 @@ dist/
 coverage/
 .dev.vars
 .DS_Store
+reports/
+playwright-report/
+test-results/

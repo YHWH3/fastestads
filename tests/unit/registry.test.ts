@@ -1,5 +1,9 @@
+import { existsSync, readdirSync, statSync } from 'node:fs';
+import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { TOOLS, getTool, liveTools } from '@core/tools/registry';
+import { TOOLS, getTool, liveTools, relatedLive } from '@core/tools/registry';
+
+const PAGES_TOOLS_DIR = join(import.meta.dirname, '../../src/pages/tools');
 
 describe('tool registry', () => {
   it('contains exactly one live tool', () => {
@@ -52,5 +56,40 @@ describe('tool registry', () => {
         expect(src.lastVerified).toMatch(/^\d{4}-\d{2}-\d{2}$/);
       }
     }
+  });
+
+  it('live tools carry path, seo, breadcrumb and content metadata', () => {
+    for (const tool of liveTools()) {
+      expect(tool.path, tool.slug).toBe(`/tools/${tool.slug}/`);
+      expect(tool.seo?.title, tool.slug).toBeTruthy();
+      expect(tool.seo?.description, tool.slug).toBeTruthy();
+      expect(tool.seo!.description.length).toBeGreaterThanOrEqual(70);
+      expect(tool.seo!.description.length).toBeLessThanOrEqual(160);
+      expect(tool.seo!.title.length).toBeLessThanOrEqual(60);
+      expect(tool.breadcrumb?.length, tool.slug).toBeGreaterThan(1);
+      expect(tool.content?.lastReviewed, tool.slug).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    }
+  });
+
+  it('every live tool has a page file', () => {
+    for (const tool of liveTools()) {
+      const page = join(PAGES_TOOLS_DIR, tool.slug, 'index.astro');
+      expect(existsSync(page), `${tool.slug} missing ${page}`).toBe(true);
+    }
+  });
+
+  it('every page under src/pages/tools/ belongs to a live tool', () => {
+    const dirs = readdirSync(PAGES_TOOLS_DIR).filter((name) =>
+      statSync(join(PAGES_TOOLS_DIR, name)).isDirectory(),
+    );
+    const liveSlugs = new Set(liveTools().map((t) => t.slug));
+    for (const dir of dirs) {
+      expect(liveSlugs.has(dir), `${dir} has a page but is not a live tool`).toBe(true);
+    }
+  });
+
+  it('relatedLive returns only live related tools', () => {
+    const tool = getTool('google-ads-headline-checker')!;
+    expect(relatedLive(tool)).toHaveLength(0); // all related tools are planned
   });
 });

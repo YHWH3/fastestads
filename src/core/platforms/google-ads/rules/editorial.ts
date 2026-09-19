@@ -19,6 +19,7 @@ type AssetFinder = (text: string) => string[] | null;
 /** Builds a per-field editorial rule: flag every asset where `find` returns hits. */
 function editorialRule(
   id: string,
+  label: string,
   source: Rule['source'],
   find: AssetFinder,
   copy: (
@@ -28,6 +29,7 @@ function editorialRule(
 ): Rule {
   return defineRule({
     id,
+    label,
     kind: 'editorial_indicator',
     severity: 'warning',
     source,
@@ -55,6 +57,7 @@ function editorialRule(
 
 const charsEmoji = editorialRule(
   'chars.emoji',
+  'Emoji in ad text',
   SOURCES.punctuation,
   (text) => segmentGraphemes(text).filter((g) => isEmoji(g)),
   (name) => ({
@@ -66,6 +69,7 @@ const charsEmoji = editorialRule(
 
 const charsHalfwidthKatakana = editorialRule(
   'chars.halfwidth_katakana',
+  'Half-width katakana',
   SOURCES.punctuation,
   (text) => {
     const hits: string[] = [];
@@ -83,6 +87,7 @@ const charsHalfwidthKatakana = editorialRule(
 
 const charsInvisible = editorialRule(
   'chars.invisible',
+  'Invisible characters',
   SOURCES.spacing,
   (text) =>
     detectInvisible(text).map((h) => `U+${h.cp.toString(16).toUpperCase().padStart(4, '0')}`),
@@ -97,6 +102,7 @@ const charsInvisible = editorialRule(
 
 const whitespaceEdge = editorialRule(
   'whitespace.edge',
+  'Leading or trailing whitespace',
   SOURCES.spacing,
   (text) => (hasEdgeWhitespace(text) ? ['edge whitespace'] : []),
   (name) => ({
@@ -108,6 +114,7 @@ const whitespaceEdge = editorialRule(
 
 const whitespaceDouble = editorialRule(
   'whitespace.double',
+  'Double spaces',
   SOURCES.spacing,
   (text) => (hasDoubleSpace(text) ? ['double space'] : []),
   (name) => ({
@@ -119,6 +126,7 @@ const whitespaceDouble = editorialRule(
 
 const whitespaceNonstandard = editorialRule(
   'whitespace.nonstandard',
+  'Non-standard spaces',
   SOURCES.spacing,
   (text) =>
     detectNonstandardSpaces(text).map(
@@ -163,6 +171,7 @@ function findMissingSpaceAfterPunct(text: string): string[] {
 
 const whitespaceMissingAfterPunct = editorialRule(
   'whitespace.missing_after_punct',
+  'Missing space after punctuation',
   SOURCES.spacing,
   findMissingSpaceAfterPunct,
   (name, hits) => ({
@@ -195,6 +204,7 @@ function findRepeatedPunctuation(text: string): string[] {
 
 const punctRepeated = editorialRule(
   'punct.repeated',
+  'Repeated punctuation',
   SOURCES.punctuation,
   findRepeatedPunctuation,
   (name, hits) => ({
@@ -206,6 +216,7 @@ const punctRepeated = editorialRule(
 
 const punctExclamationExcess = editorialRule(
   'punct.exclamation_excess',
+  'Excessive exclamation marks',
   SOURCES.punctuation,
   (text) => {
     const count = (text.match(/!/g) ?? []).length;
@@ -232,6 +243,7 @@ function findDecorativeSymbols(text: string): string[] {
 
 const symbolsDecorative = editorialRule(
   'symbols.decorative',
+  'Decorative symbols',
   SOURCES.punctuation,
   findDecorativeSymbols,
   (name, hits) => ({
@@ -255,6 +267,7 @@ function capsWords(text: string): string[] {
 
 const capsAllCapsWord = defineRule({
   id: 'caps.all_caps_word',
+  label: 'All-caps words',
   kind: 'editorial_indicator',
   severity: 'warning',
   source: SOURCES.capitalization,
@@ -318,6 +331,7 @@ function findAlternatingCaps(text: string): string[] {
 
 const capsAlternating = editorialRule(
   'caps.alternating',
+  'Alternating capitalization',
   SOURCES.capitalization,
   findAlternatingCaps,
   (name, hits) => ({
@@ -337,6 +351,7 @@ function findSpacedLetters(text: string): string[] {
 
 const capsSpacedLetters = editorialRule(
   'caps.spaced_letters',
+  'Spaced-out letters',
   SOURCES.capitalization,
   findSpacedLetters,
   (name, hits) => ({
@@ -374,6 +389,7 @@ export function findPhoneNumbers(text: string): string[] {
 
 const phoneInText = editorialRule(
   'phone.in_text',
+  'Phone number in ad text',
   SOURCES.phone,
   findPhoneNumbers,
   (name, hits) => ({
@@ -396,6 +412,7 @@ function findRepeatedWords(text: string): string[] {
 
 const repetitionWordWithinAsset = editorialRule(
   'repetition.word_within_asset',
+  'Repeated words in one asset',
   SOURCES.repetition,
   findRepeatedWords,
   (name, hits) => ({

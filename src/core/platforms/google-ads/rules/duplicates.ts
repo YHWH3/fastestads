@@ -77,6 +77,7 @@ function duplicateRule(
 ): Rule {
   return defineRule({
     id,
+    label: wantExact ? 'Exact duplicate assets' : 'Duplicates after normalization',
     kind: 'structure',
     severity,
     source: SOURCES.repetition,
@@ -118,6 +119,7 @@ function duplicateRule(
 
 const duplicateNear = defineRule({
   id: 'duplicate.near',
+  label: 'Near-duplicate wording',
   kind: 'structure',
   severity: 'warning',
   source: SOURCES.repetition,

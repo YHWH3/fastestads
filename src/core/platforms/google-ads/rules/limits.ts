@@ -7,6 +7,7 @@ import { countFor, displayName, nonEmptyFor, occurrenceKey, ref } from './shared
 function countMinRule(kind: 'headline' | 'description', plural: string): Rule {
   return defineRule({
     id: `${kind}.count.min`,
+    label: `Minimum ${plural.slice(0, -1)} count`,
     kind: 'platform_limit',
     severity: 'error',
     source: SOURCES.rsaSpec,
@@ -34,6 +35,7 @@ function countMinRule(kind: 'headline' | 'description', plural: string): Rule {
 function countMaxRule(kind: 'headline' | 'description' | 'path', plural: string): Rule {
   return defineRule({
     id: `${kind}.count.max`,
+    label: `Maximum ${plural.slice(0, -1)} count`,
     kind: 'platform_limit',
     severity: 'error',
     source: SOURCES.rsaSpec,
@@ -63,6 +65,7 @@ function countMaxRule(kind: 'headline' | 'description' | 'path', plural: string)
 function lengthMaxRule(kind: 'headline' | 'description' | 'path', plural: string): Rule {
   return defineRule({
     id: `${kind}.length.max`,
+    label: `${plural.slice(0, -1)} length limit`,
     kind: 'platform_limit',
     severity: 'error',
     source: SOURCES.rsaSpec,
@@ -93,6 +96,7 @@ function lengthMaxRule(kind: 'headline' | 'description' | 'path', plural: string
 
 const fieldLineBreak = defineRule({
   id: 'field.line_break',
+  label: 'No line breaks in fields',
   kind: 'platform_limit',
   severity: 'error',
   source: SOURCES.rsaSpec,
@@ -121,6 +125,7 @@ const fieldLineBreak = defineRule({
 
 const finalUrlInvalid = defineRule({
   id: 'finalUrl.invalid',
+  label: 'Final URL must be valid',
   kind: 'platform_limit',
   severity: 'error',
   source: SOURCES.rsaSpec,

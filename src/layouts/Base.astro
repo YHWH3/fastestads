@@ -1,0 +1,98 @@
+---
+import { PUBLIC_CF_BEACON_TOKEN } from 'astro:env/client';
+import { canonicalFor, serializeJsonLd } from '../lib/seo';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Site-relative canonical path; defaults to the current URL path. */
+  canonicalPath?: string;
+  robots?: string;
+  /** JSON-LD objects, rendered as application/ld+json scripts. */
+  jsonLd?: Array<Record<string, unknown>>;
+}
+
+const { title, description, canonicalPath = Astro.url.pathname, robots, jsonLd = [] } = Astro.props;
+const canonical = canonicalFor(canonicalPath);
+const ogImage = canonicalFor('/icon-512.png');
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {robots && <meta name="robots" content={robots} />}
+    <meta name="theme-color" content="#1d4ed8" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/icon-192.png" sizes="192x192" type="image/png" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="FastestAds" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    {jsonLd.map((data) => (
+      <script type="application/ld+json" set:html={serializeJsonLd(data)}></script>
+    ))}
+    {PUBLIC_CF_BEACON_TOKEN && (
+      <script
+        defer
+        src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon={JSON.stringify({ token: PUBLIC_CF_BEACON_TOKEN })}
+      ></script>
+    )}
+  </head>
+  <body>
+    <a class="skip-link" href="#main">
+      Skip to content
+    </a>
+    <header class="site-header">
+      <div class="site-header__inner">
+        <a class="site-header__brand" href="/">
+          FastestAds
+        </a>
+        <nav class="site-nav" aria-label="Main">
+          <a
+            href="/tools/"
+            aria-current={Astro.url.pathname.startsWith('/tools') ? 'page' : undefined}
+          >
+            Tools
+          </a>
+          <a
+            href="/privacy/"
+            aria-current={Astro.url.pathname === '/privacy/' ? 'page' : undefined}
+          >
+            Privacy
+          </a>
+        </nav>
+      </div>
+    </header>
+    <main id="main">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <div class="site-footer__inner">
+        <nav class="site-footer__links" aria-label="Footer">
+          <a href="/">Home</a>
+          <a href="/tools/">Tools</a>
+          <a href="/privacy/">Privacy</a>
+        </nav>
+        <p>
+          FastestAds is not affiliated with Google. Rule checks reflect published limits and
+          editorial policies as of their verification dates; semantic judgments are AI estimates and
+          cannot guarantee ad approval.
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>

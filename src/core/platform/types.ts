@@ -119,6 +119,8 @@ export interface RuleContext {
 export interface Rule {
   /** Stable public identifier; add, don't rename. */
   id: string;
+  /** Short human label for documentation pages. */
+  label: string;
   kind: IssueKind;
   severity: Severity;
   source?: SourceRef;

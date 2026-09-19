@@ -1,0 +1,45 @@
+---
+import Base from '../../layouts/Base.astro';
+import { liveTools, TOOLS } from '../../core/tools/registry';
+import { breadcrumbJsonLd } from '../../lib/seo';
+
+const live = liveTools();
+const planned = TOOLS.filter((t) => t.status === 'planned');
+const title = 'Ad copy tools — FastestAds';
+const description =
+  'Fast, privacy-conscious tools for checking ad copy against platform limits, editorial rules and quality best practices.';
+const breadcrumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Tools', path: '/tools/' },
+];
+---
+
+<Base
+  title={title}
+  description={description}
+  canonicalPath="/tools/"
+  jsonLd={[breadcrumbJsonLd(breadcrumbs)]}
+>
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <ol>
+      <li>
+        <a href="/">Home</a>
+      </li>
+      <li aria-current="page">Tools</li>
+    </ol>
+  </nav>
+  <h1>Tools</h1>
+  <ul class="tool-cards">
+    {live.map((tool) => (
+      <li>
+        <a class="tool-card" href={tool.path}>
+          <h2>{tool.name}</h2>
+          <p>{tool.description}</p>
+        </a>
+      </li>
+    ))}
+  </ul>
+
+  <h2>In development</h2>
+  <p>{planned.map((t) => t.name).join(' · ')}</p>
+</Base>

@@ -40,6 +40,7 @@ type RuleDef = Omit<Rule, 'check'> & {
 export function defineRule(def: RuleDef): Rule {
   const rule: Rule = {
     id: def.id,
+    label: def.label,
     kind: def.kind,
     severity: def.severity,
     source: def.source,

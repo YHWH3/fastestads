@@ -1,0 +1,240 @@
+@import './tokens.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: var(--fa-font);
+  color: var(--fa-text);
+  background: var(--fa-bg);
+  line-height: 1.55;
+}
+
+body {
+  margin: 0;
+  min-width: 0;
+}
+
+img,
+svg {
+  max-width: 100%;
+}
+
+a {
+  color: var(--fa-accent);
+}
+
+a:hover {
+  color: var(--fa-accent-hover);
+}
+
+:focus-visible {
+  outline: 2px solid var(--fa-focus);
+  outline-offset: 2px;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  padding: var(--fa-space-2) var(--fa-space-3);
+  background: var(--fa-accent);
+  color: #fff;
+  z-index: 10;
+}
+
+.skip-link:focus {
+  left: 0;
+}
+
+.site-header {
+  border-bottom: 1px solid var(--fa-border);
+  background: var(--fa-surface);
+}
+
+.site-header__inner {
+  max-width: var(--fa-max-width);
+  margin: 0 auto;
+  padding: var(--fa-space-3) var(--fa-space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--fa-space-5);
+  flex-wrap: wrap;
+}
+
+.site-header__brand {
+  font-weight: 700;
+  font-size: 1.1rem;
+  text-decoration: none;
+  color: var(--fa-text);
+}
+
+.site-nav {
+  display: flex;
+  gap: var(--fa-space-4);
+}
+
+.site-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  text-decoration: none;
+  color: var(--fa-text-muted);
+}
+
+.site-nav a:hover,
+.site-nav a[aria-current='page'] {
+  color: var(--fa-accent);
+}
+
+main {
+  max-width: var(--fa-max-width);
+  margin: 0 auto;
+  padding: var(--fa-space-5) var(--fa-space-4) var(--fa-space-8);
+}
+
+.site-footer {
+  border-top: 1px solid var(--fa-border);
+  background: var(--fa-surface);
+}
+
+.site-footer__inner {
+  max-width: var(--fa-max-width);
+  margin: 0 auto;
+  padding: var(--fa-space-5) var(--fa-space-4);
+  font-size: 0.85rem;
+  color: var(--fa-text-muted);
+  display: grid;
+  gap: var(--fa-space-3);
+}
+
+.site-footer__links {
+  display: flex;
+  gap: var(--fa-space-4);
+  flex-wrap: wrap;
+}
+
+/* Breadcrumbs */
+.breadcrumb ol {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--fa-space-2);
+  padding: 0;
+  margin: 0 0 var(--fa-space-4);
+  font-size: 0.9rem;
+  color: var(--fa-text-muted);
+}
+
+.breadcrumb li:not(:last-child)::after {
+  content: '/';
+  margin-left: var(--fa-space-2);
+  color: var(--fa-border);
+}
+
+/* Article content */
+.prose {
+  max-width: 46rem;
+}
+
+.prose h2 {
+  margin-top: var(--fa-space-8);
+  font-size: 1.3rem;
+}
+
+.prose h3 {
+  margin-top: var(--fa-space-5);
+  font-size: 1.05rem;
+}
+
+.prose table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: var(--fa-space-4) 0;
+  font-size: 0.95rem;
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
+
+.prose th,
+.prose td {
+  border: 1px solid var(--fa-border);
+  padding: var(--fa-space-2) var(--fa-space-3);
+  text-align: left;
+  vertical-align: top;
+}
+
+.prose th {
+  background: var(--fa-surface);
+}
+
+.lead {
+  font-size: 1.1rem;
+  color: var(--fa-text-muted);
+  max-width: 46rem;
+}
+
+/* Tool cards */
+.tool-cards {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: var(--fa-space-4);
+  grid-template-columns: repeat(auto-fill, minmax(min(20rem, 100%), 1fr));
+}
+
+.tool-card {
+  display: block;
+  border: 1px solid var(--fa-border);
+  border-radius: var(--fa-radius);
+  padding: var(--fa-space-4);
+  text-decoration: none;
+  color: var(--fa-text);
+  background: var(--fa-bg);
+}
+
+.tool-card:hover {
+  border-color: var(--fa-accent);
+}
+
+.tool-card h2,
+.tool-card h3 {
+  margin: 0 0 var(--fa-space-2);
+  color: var(--fa-accent);
+  font-size: 1.1rem;
+}
+
+.tool-card p {
+  margin: 0;
+  color: var(--fa-text-muted);
+}
+
+.tag {
+  display: inline-block;
+  font-size: 0.75rem;
+  padding: 0.1em 0.5em;
+  border-radius: var(--fa-radius-sm);
+  background: var(--fa-info-bg);
+  color: var(--fa-info);
+  vertical-align: middle;
+}
+
+/* Reserved ad space (only rendered when ads are enabled) */
+.ad-slot {
+  margin: var(--fa-space-6) auto;
+  border: 1px dashed var(--fa-border);
+  border-radius: var(--fa-radius);
+  background: var(--fa-surface);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
