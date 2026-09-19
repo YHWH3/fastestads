@@ -23,6 +23,12 @@ describe('scoreToBand', () => {
     expect(scoreToBand(0, 3)).toBe('weak');
   });
 
+  it('bands fractional (probability-weighted) scores', () => {
+    expect(scoreToBand(1.6, 3)).toBe('strong'); // 0.8
+    expect(scoreToBand(1.1, 3)).toBe('good'); // 0.55
+    expect(scoreToBand(0.6, 3)).toBe('needs_work'); // 0.3
+  });
+
   it('respects exact thresholds', () => {
     // normalized 0.8 -> strong, 0.55 -> good, 0.3 -> needs_work
     expect(THRESHOLDS.score).toMatchObject({ strong: 0.8, good: 0.55, needsWork: 0.3 });

@@ -73,7 +73,8 @@ function validAnswer(raw: unknown, question: JevQuestion): JevAnswer | null {
     }
     case 'score': {
       const levels = question.criteria.length;
-      if (typeof raw.score !== 'number' || !Number.isInteger(raw.score)) return null;
+      // Jev scores are probability-weighted and land between levels (e.g. 1.6).
+      if (typeof raw.score !== 'number' || !Number.isFinite(raw.score)) return null;
       if (raw.score < 0 || raw.score > levels - 1) return null;
       if (!isStringMap(raw.legend)) return null;
       if (!isProbabilityMap(raw.probabilities) || !isUnitInterval(raw.confidence)) return null;

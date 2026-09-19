@@ -70,7 +70,7 @@ describe('parseAnswers', () => {
   });
 
   it('rejects a score outside [0, levels-1]', () => {
-    for (const score of [-1, 4, 3.5, 5]) {
+    for (const score of [-1, 4, 5]) {
       const { missing } = parseAnswers(
         { clarity_offer: { type: 'score', score, legend: {}, probabilities: {}, confidence: 1 } },
         IDS,
@@ -78,8 +78,8 @@ describe('parseAnswers', () => {
       );
       expect(missing).toContain('clarity_offer');
     }
-    // boundaries are valid
-    for (const score of [0, 3]) {
+    // boundaries and fractional (probability-weighted) scores are valid
+    for (const score of [0, 1.6, 3]) {
       const { missing } = parseAnswers(
         { clarity_offer: { type: 'score', score, legend: {}, probabilities: {}, confidence: 1 } },
         IDS,

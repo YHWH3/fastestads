@@ -404,7 +404,7 @@ function differentiationDimension(det: DeterministicResult, semantic: SemanticSl
     const reasons = [`Jev rated headline complementarity "${band.replace('_', ' ')}".`];
     if (redundantYes >= 2)
       reasons.push(`${redundantYes} headline pairs appear to repeat each other.`);
-    if (hasNear) reasons.push('Near-duplicate wording limits the score.');
+    if (hasNear) reasons.push('Near-duplicate wording limits this rating.');
     return {
       id: 'differentiation',
       label: 'Differentiation',
@@ -480,7 +480,7 @@ function relevanceDimension(det: DeterministicResult, semantic: SemanticSlice): 
 
   if (det.issues.some((i) => i.ruleId === 'keyword.stuffing')) {
     band = capBand(band, 'good');
-    reasons.push('Keyword stuffing limits the score.');
+    reasons.push('Keyword stuffing limits this rating.');
   }
 
   return { id: 'relevance', label: 'Relevance', basis, band, lowConfidence, reasons };

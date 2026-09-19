@@ -151,16 +151,18 @@ export function AdChecker() {
   const runSemantic = async (
     input: AdInput,
     det: ReturnType<typeof runDeterministic>,
-  ): Promise<void> => {
+  ): Promise<number | null> => {
     const seq = ++seqRef.current;
     abortRef.current?.abort();
     const controller = new AbortController();
     abortRef.current = controller;
 
-    const finish = (slice: SemanticSlice, state: UiState) => {
-      if (seqRef.current !== seq) return; // stale response — a newer request is in flight
-      setReport(buildReport(det, slice, googleAdsRsa));
+    const finish = (slice: SemanticSlice, state: UiState): number => {
+      if (seqRef.current !== seq) return -1; // stale response — a newer request is in flight
+      const next = buildReport(det, slice, googleAdsRsa);
+      setReport(next);
       setUiState(state);
+      return next.issues.length;
     };
 
     try {
@@ -178,10 +180,10 @@ export function AdChecker() {
       });
 
       if (res.status === 429) {
-        finish({ state: 'unavailable', reason: 'rate_limited' }, 'rate_limited');
+        const count = finish({ state: 'unavailable', reason: 'rate_limited' }, 'rate_limited');
         track('semantic_analysis_failure', { reason: 'rate_limited' });
         setAnnouncement('Semantic evaluation unavailable — deterministic results shown.');
-        return;
+        return count;
       }
 
       const body = (await res.json().catch(() => null)) as {
@@ -191,26 +193,43 @@ export function AdChecker() {
       } | null;
 
       if (res.ok && body && (body.status === 'ok' || body.status === 'partial') && body.result) {
-        finish({ state: body.status, result: body.result }, 'complete');
+        const count = finish({ state: body.status, result: body.result }, 'complete');
         track('semantic_analysis_success');
-      } else if (res.ok && body?.status === 'skipped') {
-        finish({ state: 'skipped', reason: body.reason }, 'complete');
+        return count;
+      }
+      if (res.ok && body?.status === 'skipped') {
+        const count = finish({ state: 'skipped', reason: body.reason }, 'complete');
         track('semantic_analysis_success', { skipped: true });
-      } else if (res.status === 503) {
-        finish({ state: 'unavailable', reason: body?.reason }, 'semantic_unavailable');
+        return count;
+      }
+      if (res.status === 503) {
+        const count = finish(
+          { state: 'unavailable', reason: body?.reason },
+          'semantic_unavailable',
+        );
         track('semantic_analysis_failure', { reason: body?.reason ?? 'upstream_error' });
         setAnnouncement('Semantic evaluation unavailable — deterministic results shown.');
-      } else {
-        finish({ state: 'unavailable', reason: 'network' }, 'error');
-        track('semantic_analysis_failure', { reason: 'unexpected_response' });
-        setAnnouncement('Semantic evaluation unavailable — deterministic results shown.');
+        return count;
       }
+      const count = finish({ state: 'unavailable', reason: 'network' }, 'error');
+      track('semantic_analysis_failure', { reason: 'unexpected_response' });
+      setAnnouncement('Semantic evaluation unavailable — deterministic results shown.');
+      return count;
     } catch {
-      if (controller.signal.aborted) return;
-      finish({ state: 'unavailable', reason: 'network' }, 'semantic_unavailable');
+      if (controller.signal.aborted) return null;
+      const count = finish({ state: 'unavailable', reason: 'network' }, 'semantic_unavailable');
       track('semantic_analysis_failure', { reason: 'network' });
       setAnnouncement('Semantic evaluation unavailable — deterministic results shown.');
+      return count;
     }
+  };
+
+  const announceComplete = (issueCount: number | null, det: ReturnType<typeof runDeterministic>) => {
+    setAnnouncement((prev) => {
+      if (prev === 'Semantic evaluation unavailable — deterministic results shown.') return prev;
+      const n = issueCount === null || issueCount < 0 ? det.issues.length : issueCount;
+      return `Analysis complete. ${n} ${n === 1 ? 'issue' : 'issues'} found.`;
+    });
   };
 
   const analyze = async () => {
@@ -220,15 +239,8 @@ export function AdChecker() {
     setUiState('analyzing');
     // Deterministic results render immediately; semantic section shows busy.
     setReport(buildReport(det, { state: 'not_requested' }, googleAdsRsa));
-    await runSemantic(input, det);
-    if (seqRef.current !== 0) {
-      // Announce after the semantic pass settles (or fails).
-      setAnnouncement((prev) =>
-        prev === 'Semantic evaluation unavailable — deterministic results shown.'
-          ? prev
-          : `Analysis complete. ${det.issues.length} issues found.`,
-      );
-    }
+    const issueCount = await runSemantic(input, det);
+    announceComplete(issueCount, det);
     track('analysis_completed');
     for (const ruleId of new Set(det.issues.map((i) => i.ruleId))) {
       track('issue_type_detected', { ruleId });
@@ -238,8 +250,12 @@ export function AdChecker() {
   const retrySemantic = async () => {
     if (!report) return;
     const input = toAdInput(fields);
+    // Re-run deterministic checks on the current fields so the report is never
+    // built from stale deterministic data.
+    const det = runDeterministic(input, googleAdsRsa);
     setUiState('analyzing');
-    await runSemantic(input, report.deterministic);
+    const issueCount = await runSemantic(input, det);
+    announceComplete(issueCount, det);
   };
 
   const reset = () => {
