@@ -171,8 +171,9 @@ const breadcrumbs = tool.breadcrumb ?? [];
         </table>
       </div>
       <p>
-        Double-width characters (CJK text, emoji and full-width forms) count as 2 characters toward
-        each limit — the same convention the Google Ads interface uses.
+        Each character in a double-width language such as Chinese, Japanese or Korean counts as 2
+        toward the limit, per Google's documentation. Emoji and half-width katakana are unsupported
+        in ad text, so the checker flags them instead of counting them specially.
       </p>
       <p>
         Verified against{' '}
@@ -233,11 +234,11 @@ const breadcrumbs = tool.breadcrumb ?? [];
         The summary shows <strong>Blocked</strong> when a hard platform limit is violated,{' '}
         <strong>Needs work</strong> when warnings or weak dimensions remain, and{' '}
         <strong>Ready</strong> when nothing significant is flagged. Issues carry a severity —
-        <strong>Error</strong> means Google will not accept the ad as written,{' '}
-        <strong>Warning</strong> means it may be flagged or underperform, and <strong>Info</strong>{' '}
-        is a suggestion. Dimension cards show a band from Strong to Weak; "(low confidence)" means
-        the model's own confidence was below {THRESHOLDS.lowConfidence}, so treat that rating
-        cautiously.
+        <strong>Error</strong> means a hard limit or a blocking structural problem you must fix
+        before the ad can serve as intended, <strong>Warning</strong> means it may be flagged or
+        underperform, and <strong>Info</strong> is a suggestion. Dimension cards show a band from
+        Strong to Weak; "(low confidence)" means the model's own confidence was below{' '}
+        {THRESHOLDS.lowConfidence}, so treat that rating cautiously.
       </p>
     </section>
 
