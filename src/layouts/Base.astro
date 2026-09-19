@@ -1,5 +1,5 @@
 ---
-import { PUBLIC_CF_BEACON_TOKEN } from 'astro:env/client';
+import { PUBLIC_CF_BEACON_TOKEN, PUBLIC_GA_MEASUREMENT_ID } from 'astro:env/client';
 import { canonicalFor, serializeJsonLd } from '../lib/seo';
 import '../styles/global.css';
 
@@ -50,6 +50,18 @@ const ogImage = canonicalFor('/icon-512.png');
         src="https://static.cloudflareinsights.com/beacon.min.js"
         data-cf-beacon={JSON.stringify({ token: PUBLIC_CF_BEACON_TOKEN })}
       ></script>
+    )}
+    {PUBLIC_GA_MEASUREMENT_ID && (
+      <>
+        <script
+          async
+          src={`https://www.googletagmanager.com/gtag/js?id=${PUBLIC_GA_MEASUREMENT_ID}`}
+        ></script>
+        <script
+          is:inline
+          set:html={`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)};gtag('js',new Date());gtag('config','${PUBLIC_GA_MEASUREMENT_ID}',{anonymize_ip:true});`}
+        ></script>
+      </>
     )}
   </head>
   <body>

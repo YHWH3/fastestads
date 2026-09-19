@@ -51,12 +51,17 @@ const breadcrumbs = [
         request is processed.
       </li>
       <li>We do not require accounts, email addresses or any personal information.</li>
-      <li>We do not set cookies.</li>
+      <li>
+        Our own code sets no cookies. On deployments where Google Analytics 4 is enabled, Google
+        sets its <code>_ga</code> measurement cookies — see the Analytics section below.
+      </li>
       <li>
         Our server logs record request metadata only — request id, latency, status and question
         count — never ad text.
       </li>
-      <li>Analytics events contain rule ids and counts only, never ad copy.</li>
+      <li>
+        Analytics events contain rule ids and counts only, never ad copy or numbers you enter.
+      </li>
     </ul>
 
     <h2>Draft persistence</h2>
@@ -70,7 +75,15 @@ const breadcrumbs = [
     <p>
       When enabled on a deployment, we use Cloudflare Web Analytics, which is cookie-less and does
       not collect personal data or track you across sites. It measures page views and performance
-      only. Deployments where it is disabled collect no analytics at all.
+      only.
+    </p>
+    <p>
+      Deployments may also include Google Analytics 4, which measures aggregate page views and
+      referral sources using Google's <code>_ga</code> cookies. GA4 is configured with IP
+      anonymization and is used to understand which tools and pages are useful — our custom events
+      never contain ad copy, keywords you check, or numbers you enter into the tools. You can block
+      it with any standard content blocker without affecting the tools. Deployments where analytics
+      are disabled collect none at all.
     </p>
 
     <h2>Infrastructure</h2>

@@ -28,6 +28,11 @@ export default defineConfig({
         access: 'public',
         optional: true,
       }),
+      PUBLIC_GA_MEASUREMENT_ID: envField.string({
+        context: 'client',
+        access: 'public',
+        optional: true,
+      }),
     },
   },
   vite: {

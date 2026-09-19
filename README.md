@@ -42,14 +42,15 @@ fallback state — everything else works.
 
 ## Environment variables
 
-| Name                     | Where                                               | Purpose                                                  |
-| ------------------------ | --------------------------------------------------- | -------------------------------------------------------- |
-| `TYPESAFE_API_KEY`       | secret (`wrangler secret put`, `.dev.vars` locally) | Jev auth. Never public.                                  |
-| `TYPESAFE_BASE_URL`      | var, optional                                       | default `https://api.typesafe.ai`                        |
-| `TYPESAFE_MODEL`         | var, optional                                       | default `jev-latest`                                     |
-| `SITE_URL`               | var                                                 | canonical origin (`https://fastestads.com`)              |
-| `PUBLIC_CF_BEACON_TOKEN` | var, optional                                       | Cloudflare Web Analytics (cookie-less); off when absent  |
-| `PUBLIC_ADS_ENABLED`     | var, optional                                       | `'true'` renders ad-slot containers (CMP required first) |
+| Name                       | Where                                               | Purpose                                                  |
+| -------------------------- | --------------------------------------------------- | -------------------------------------------------------- |
+| `TYPESAFE_API_KEY`         | secret (`wrangler secret put`, `.dev.vars` locally) | Jev auth. Never public.                                  |
+| `TYPESAFE_BASE_URL`        | var, optional                                       | default `https://api.typesafe.ai`                        |
+| `TYPESAFE_MODEL`           | var, optional                                       | default `jev-latest`                                     |
+| `SITE_URL`                 | var                                                 | canonical origin (`https://fastestads.com`)              |
+| `PUBLIC_CF_BEACON_TOKEN`   | var, optional                                       | Cloudflare Web Analytics (cookie-less); off when absent  |
+| `PUBLIC_ADS_ENABLED`       | var, optional                                       | `'true'` renders ad-slot containers (CMP required first) |
+| `PUBLIC_GA_MEASUREMENT_ID` | var, optional                                       | GA4 `G-…` id; gtag snippet renders only when set         |
 
 ## Test matrix
 
