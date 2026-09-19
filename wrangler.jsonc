@@ -1,0 +1,21 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "fastestads",
+  "compatibility_date": "2026-09-12",
+  "compatibility_flags": ["nodejs_compat"],
+  "vars": {
+    "SITE_URL": "https://fastestads.com",
+    "TYPESAFE_BASE_URL": "https://api.typesafe.ai",
+    "TYPESAFE_MODEL": "jev-latest",
+  },
+  "ratelimits": [
+    {
+      "name": "SEMANTIC_RATE_LIMITER",
+      "namespace_id": "1001",
+      "simple": {
+        "limit": 30,
+        "period": 60,
+      },
+    },
+  ],
+}
