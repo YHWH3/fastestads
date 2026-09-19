@@ -1,0 +1,24 @@
+---
+import { AdChecker } from '../../../ui/AdChecker';
+import '../../../styles/tool.css';
+
+const title = 'Google Ads Headline & Ad Copy Checker';
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Check Google Ads headlines and ad copy against RSA limits, editorial policies, and best practices."
+    />
+    <title>{title} · FastestAds</title>
+  </head>
+  <body>
+    <main>
+      <h1>{title}</h1>
+      <AdChecker client:load />
+    </main>
+  </body>
+</html>

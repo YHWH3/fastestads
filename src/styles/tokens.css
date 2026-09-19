@@ -1,0 +1,35 @@
+:root {
+  /* Colors — all text/background pairs meet >= 4.5:1 contrast. */
+  --fa-bg: #ffffff;
+  --fa-surface: #f6f7f9;
+  --fa-border: #d4d8de;
+  --fa-text: #171b21;
+  --fa-text-muted: #4a5462;
+  --fa-accent: #1d4ed8;
+  --fa-accent-hover: #1e40af;
+  --fa-error: #b3261e;
+  --fa-error-bg: #fdecea;
+  --fa-warning: #7a4a01;
+  --fa-warning-bg: #fff4e0;
+  --fa-info: #1d4ed8;
+  --fa-info-bg: #e8f0fe;
+  --fa-success: #1d6b3a;
+  --fa-success-bg: #e6f4ea;
+  --fa-focus: #1d4ed8;
+
+  --fa-space-1: 0.25rem;
+  --fa-space-2: 0.5rem;
+  --fa-space-3: 0.75rem;
+  --fa-space-4: 1rem;
+  --fa-space-5: 1.5rem;
+  --fa-space-6: 2rem;
+  --fa-space-8: 3rem;
+
+  --fa-radius: 0.5rem;
+  --fa-radius-sm: 0.3rem;
+
+  --fa-font: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --fa-font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --fa-max-width: 72rem;
+}
