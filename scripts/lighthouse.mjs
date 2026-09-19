@@ -17,6 +17,7 @@ const REPORTS = fileURLToPath(new URL('../reports/lighthouse/', import.meta.url)
 const PAGES = [
   { name: 'home', path: '/' },
   { name: 'tool', path: '/tools/google-ads-headline-checker/' },
+  { name: 'cpm', path: '/tools/cpm-calculator/' },
 ];
 
 const THRESHOLDS = {
