@@ -48,11 +48,46 @@ export const TOOLS: readonly ToolDefinition[] = [
     ],
     content: { lastReviewed: '2026-09-19' },
     related: [
+      'cpm-calculator',
       'responsive-search-ad-checker',
       'google-ads-description-checker',
       'ad-copy-character-counter',
     ],
     sources: [GOOGLE_ADS_SOURCES.rsaSpec, GOOGLE_ADS_SOURCES.editorial],
+  },
+  {
+    slug: 'cpm-calculator',
+    name: 'CPM Calculator',
+    shortName: 'CPM Calc',
+    description:
+      'Calculate cost per thousand impressions from spend and impressions — or solve backwards — plus derived CPC, CTR, CPA and ROAS.',
+    category: 'calculator',
+    status: 'live',
+    path: '/tools/cpm-calculator/',
+    seo: {
+      title: 'CPM Calculator — Free Cost Per Mille Solver',
+      description:
+        'Free CPM calculator: enter any two of ad spend, impressions and CPM to get the third, plus CPC, CTR, CPA and ROAS. Instant, private, no sign-up.',
+    },
+    breadcrumb: [
+      { label: 'Home', path: '/' },
+      { label: 'Tools', path: '/tools/' },
+      { label: 'CPM Calculator' },
+    ],
+    content: { lastReviewed: '2026-09-19' },
+    related: ['google-ads-headline-checker', 'roas-calculator', 'cpc-calculator'],
+    sources: [
+      {
+        label: 'Google Ads Help — Cost-per-thousand impressions (CPM): Definition',
+        url: 'https://support.google.com/google-ads/answer/6310',
+        lastVerified: '2026-09-19',
+      },
+      {
+        label: 'Google Ads Help — Media purchase options on the Display Network',
+        url: 'https://support.google.com/google-ads/answer/172621',
+        lastVerified: '2026-09-19',
+      },
+    ],
   },
   {
     slug: 'google-ads-description-checker',
@@ -93,7 +128,7 @@ export const TOOLS: readonly ToolDefinition[] = [
     description: 'Calculate return on ad spend from revenue and ad cost.',
     category: 'calculator',
     status: 'planned',
-    related: ['cpc-calculator'],
+    related: ['cpm-calculator', 'cpc-calculator'],
   },
   {
     slug: 'cpc-calculator',
@@ -102,7 +137,7 @@ export const TOOLS: readonly ToolDefinition[] = [
     description: 'Calculate cost per click from spend and click counts.',
     category: 'calculator',
     status: 'planned',
-    related: ['roas-calculator'],
+    related: ['cpm-calculator', 'roas-calculator'],
   },
   {
     slug: 'utm-builder',

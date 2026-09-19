@@ -1,0 +1,258 @@
+---
+import Base from '../../../layouts/Base.astro';
+import AdSlot from '../../../components/AdSlot.astro';
+import { CpmCalculator } from '../../../ui/CpmCalculator';
+import { getTool, relatedLive } from '../../../core/tools/registry';
+import { breadcrumbJsonLd, softwareApplicationJsonLd, toolMeta } from '../../../lib/seo';
+import '../../../styles/tool.css';
+
+const tool = getTool('cpm-calculator');
+if (!tool) throw new Error('tool registry entry missing');
+const meta = toolMeta(tool);
+const related = relatedLive(tool);
+const sources = tool.sources ?? [];
+
+const jsonLd = [
+  softwareApplicationJsonLd(tool),
+  breadcrumbJsonLd([
+    { name: 'Home', path: '/' },
+    { name: 'Tools', path: '/tools/' },
+    { name: 'CPM Calculator', path: tool.path! },
+  ]),
+];
+
+const breadcrumbs = tool.breadcrumb ?? [];
+---
+
+<Base title={meta.title} description={meta.description} canonicalPath={tool.path} jsonLd={jsonLd}>
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <ol>
+      {breadcrumbs.map((item, i) => (
+        <li aria-current={i === breadcrumbs.length - 1 ? 'page' : undefined}>
+          {item.path && i < breadcrumbs.length - 1 ? (
+            <a href={item.path}>{item.label}</a>
+          ) : (
+            item.label
+          )}
+        </li>
+      ))}
+    </ol>
+  </nav>
+
+  <h1>CPM Calculator</h1>
+  <p class="lead">
+    Enter any two of ad spend, impressions and CPM to get the third instantly. Add clicks,
+    conversions or revenue for CPC, CTR, CPA and ROAS. Free, private, no sign-up — everything runs
+    in your browser.
+  </p>
+
+  <CpmCalculator client:load />
+
+  <AdSlot slot="below-results" />
+
+  <article class="prose">
+    <section>
+      <h2>What is CPM?</h2>
+      <p>
+        CPM — cost per mille, mille being Latin for one thousand — is the price you pay for every
+        1,000 impressions your ad receives. A $10 CPM means each block of a thousand ad views costs
+        ten dollars, whether or not anyone clicks. It is the standard pricing unit for display,
+        video, and awareness-focused paid social campaigns; on the Google Display Network and
+        YouTube you can bid directly on impressions with CPM or viewable CPM (vCPM) strategies.
+      </p>
+      <p>
+        The same formula runs backwards: if you know your CPM and your reach target, it tells you
+        the budget; if you know the budget and the rate, it tells you the reach. This calculator
+        solves all three directions and also derives the metrics CPM relates to — cost per click,
+        click-through rate, cost per acquisition and return on ad spend — when you supply the extra
+        numbers.
+      </p>
+    </section>
+
+    <section>
+      <h2>The formulas</h2>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Metric</th>
+              <th scope="col">Formula</th>
+              <th scope="col">Solves</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>CPM</td>
+              <td>(Ad spend ÷ Impressions) × 1,000</td>
+              <td>What each thousand impressions cost</td>
+            </tr>
+            <tr>
+              <td>Ad spend</td>
+              <td>(CPM × Impressions) ÷ 1,000</td>
+              <td>Total budget for a planned reach</td>
+            </tr>
+            <tr>
+              <td>Impressions</td>
+              <td>(Ad spend ÷ CPM) × 1,000</td>
+              <td>Reach a budget buys at a known rate</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Optional inputs unlock the related metrics:</p>
+      <ul>
+        <li>
+          <strong>CPC</strong> = Ad spend ÷ Clicks
+        </li>
+        <li>
+          <strong>CTR</strong> = (Clicks ÷ Impressions) × 100
+        </li>
+        <li>
+          <strong>CPA</strong> = Ad spend ÷ Conversions
+        </li>
+        <li>
+          <strong>ROAS</strong> = Revenue ÷ Ad spend
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>How to use it</h2>
+      <ol>
+        <li>Pick what you want to calculate — CPM, ad spend, or impressions.</li>
+        <li>Enter the other two values. The result appears as you type.</li>
+        <li>
+          Optionally add clicks, conversions or revenue to see CPC, CTR, CPA, ROAS and profit
+          alongside the primary answer.
+        </li>
+        <li>Use "Copy results" to paste a summary into a report or media plan.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Worked example</h2>
+      <p>
+        A display campaign spent $2,500 and served 500,000 impressions. CPM = ($2,500 ÷ 500,000) ×
+        1,000 = <strong>$5.00</strong>. If the same campaign produced 750 clicks, CPC is $3.33 and
+        CTR is 0.15%. Planning backwards instead: to reach 1,000,000 impressions at a $6 CPM you
+        need a $6,000 budget — (6 × 1,000,000) ÷ 1,000.
+      </p>
+    </section>
+
+    <section>
+      <h2>When CPM is the right lens</h2>
+      <p>
+        CPM measures the cost of reach, not the cost of results. It is the right primary metric for
+        brand-awareness and video campaigns where being seen is the goal — Google recommends
+        impression-based bidding for awareness objectives. For performance goals, CPM still matters
+        but only through the chain it feeds: CPM sets the price of attention, CTR decides how much
+        of that attention becomes traffic, and CPC/CPA decide whether the traffic was worth buying.
+        Comparing CPM across channels without comparing the CTR and CPA behind it can mislead — a
+        cheap CPM on a low-intent placement can still produce an expensive conversion.
+      </p>
+      <p>
+        CPM rates vary widely by industry, audience, format, geography, season and placement, so
+        this page deliberately does not publish "average CPM" figures — treat any single benchmark
+        as context, not a target. Your own account history is the most reliable baseline.
+      </p>
+    </section>
+
+    <section>
+      <h2>CPM vs CPC vs CPA vs ROAS</h2>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Metric</th>
+              <th scope="col">Answers</th>
+              <th scope="col">Best for</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>CPM</td>
+              <td>What does a thousand impressions cost?</td>
+              <td>Awareness, reach planning, display &amp; video</td>
+            </tr>
+            <tr>
+              <td>CPC</td>
+              <td>What does one click cost?</td>
+              <td>Traffic campaigns, search</td>
+            </tr>
+            <tr>
+              <td>CTR</td>
+              <td>What share of impressions click?</td>
+              <td>Creative and relevance health</td>
+            </tr>
+            <tr>
+              <td>CPA</td>
+              <td>What does one conversion cost?</td>
+              <td>Performance campaigns</td>
+            </tr>
+            <tr>
+              <td>ROAS</td>
+              <td>How much revenue per dollar of spend?</td>
+              <td>Profitability and budget decisions</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>Limitations</h2>
+      <p>
+        This calculator does arithmetic, not forecasting. It cannot predict auction outcomes, and it
+        treats the numbers you enter as exact. Ad platforms may report served versus viewable
+        impressions differently (vCPM bills only viewable impressions), so make sure the impressions
+        figure you enter matches the basis you mean. Currency selection is display-only — the math
+        itself is unitless.
+      </p>
+    </section>
+
+    <section>
+      <h2>Privacy</h2>
+      <p>
+        Every calculation runs in your browser. Your numbers are never sent to a server, never
+        logged, and never included in analytics — the tool only records that a calculation happened,
+        not the values. Your draft stays in tab-scoped sessionStorage. Read the{' '}
+        <a href="/privacy/">privacy policy</a>.
+      </p>
+    </section>
+
+    <section>
+      <h2>Sources</h2>
+      <ul>
+        {sources.map((source) => (
+          <li>
+            <a href={source.url} rel="noopener noreferrer">
+              {source.label}
+            </a>{' '}
+            — verified {source.lastVerified}
+          </li>
+        ))}
+      </ul>
+      <p>Page content last reviewed {tool.content?.lastReviewed}.</p>
+    </section>
+  </article>
+
+  <AdSlot slot="end-of-content" />
+
+  <section aria-labelledby="related-tools">
+    <h2 id="related-tools">Related tools</h2>
+    {related.length > 0 ? (
+      <ul class="tool-cards">
+        {related.map((t) => (
+          <li>
+            <a class="tool-card" href={t.path}>
+              <h3>{t.name}</h3>
+              <p>{t.description}</p>
+            </a>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p>More FastestAds tools are in development.</p>
+    )}
+  </section>
+</Base>

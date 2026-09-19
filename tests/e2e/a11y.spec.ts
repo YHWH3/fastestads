@@ -40,6 +40,7 @@ for (const [name, path] of [
   ['home', '/'],
   ['tools hub', '/tools/'],
   ['privacy', '/privacy/'],
+  ['cpm calculator', '/tools/cpm-calculator/'],
 ] as const) {
   test(`a11y: ${name} page`, async ({ page }) => {
     await page.goto(path);

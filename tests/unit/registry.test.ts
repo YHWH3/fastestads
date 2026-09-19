@@ -6,10 +6,10 @@ import { TOOLS, getTool, liveTools, relatedLive } from '@core/tools/registry';
 const PAGES_TOOLS_DIR = join(import.meta.dirname, '../../src/pages/tools');
 
 describe('tool registry', () => {
-  it('contains exactly one live tool', () => {
-    const live = liveTools();
-    expect(live).toHaveLength(1);
-    expect(live[0].slug).toBe('google-ads-headline-checker');
+  it('contains the live tools', () => {
+    const live = liveTools().map((t) => t.slug);
+    expect(live).toContain('google-ads-headline-checker');
+    expect(live).toContain('cpm-calculator');
   });
 
   it('lists every planned tool from the design', () => {
@@ -90,6 +90,8 @@ describe('tool registry', () => {
 
   it('relatedLive returns only live related tools', () => {
     const tool = getTool('google-ads-headline-checker')!;
-    expect(relatedLive(tool)).toHaveLength(0); // all related tools are planned
+    expect(relatedLive(tool).map((t) => t.slug)).toEqual(['cpm-calculator']);
+    const calc = getTool('cpm-calculator')!;
+    expect(relatedLive(calc).map((t) => t.slug)).toEqual(['google-ads-headline-checker']);
   });
 });

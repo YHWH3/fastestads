@@ -8,6 +8,7 @@ const ROUTES: Array<{ path: string; types: string[] }> = [
   { path: '/tools/', types: ['BreadcrumbList'] },
   { path: '/privacy/', types: ['BreadcrumbList'] },
   { path: TOOL, types: ['SoftwareApplication', 'BreadcrumbList'] },
+  { path: '/tools/cpm-calculator/', types: ['SoftwareApplication', 'BreadcrumbList'] },
 ];
 
 const titles = new Set<string>();
@@ -68,6 +69,7 @@ test.describe('SEO gates', () => {
     const path = new URL(sitemapUrl!).pathname;
     const sitemap = await (await request.get(path)).text();
     expect(sitemap).toContain(`${SITE}${TOOL}`);
+    expect(sitemap).toContain(`${SITE}/tools/cpm-calculator/`);
     expect(sitemap).toContain(`${SITE}/privacy/`);
     expect(sitemap).not.toContain('/api/');
     expect(sitemap).not.toContain('/404');

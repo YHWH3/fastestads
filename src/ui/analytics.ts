@@ -6,6 +6,7 @@ export type AnalyticsEvent =
   | 'semantic_analysis_failure'
   | 'example_loaded'
   | 'issue_type_detected'
+  | 'calculation_completed'
   | 'related_tool_clicked'
   | 'paste_headlines_used'
   | 'recommendation_copied';
