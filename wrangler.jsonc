@@ -8,6 +8,9 @@
     "TYPESAFE_BASE_URL": "https://api.typesafe.ai",
     "TYPESAFE_MODEL": "jev-latest",
   },
+  // The fastestads.com custom domain is attached at the zone level (Workers →
+  // Domains), not via `routes` — the Astro adapter regenerates the deploy config
+  // and does not pass `routes` through.
   // Canonical URLs always end in '/'; the bare form must 308, not 200.
   "assets": {
     "html_handling": "auto-trailing-slash",

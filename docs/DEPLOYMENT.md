@@ -35,11 +35,19 @@ pnpm build && cp .dev.vars dist/server/.dev.vars && pnpm preview
 
 For the production `fastestads.com` service:
 
-- Set `workers_dev: false` and `preview_urls: false` in `wrangler.jsonc` so the app is only
-  reachable on the custom domain.
-- Route the custom domain in the Cloudflare dashboard (Workers → Triggers → Custom Domains).
+- Attach the custom domain in the Cloudflare dashboard (Workers → fastestads → Settings →
+  Domains & Routes → Add → Custom Domain → `fastestads.com`), or via
+  `PUT /accounts/{account_id}/workers/domains`. Do **not** add `routes` to `wrangler.jsonc` —
+  the Astro adapter regenerates `dist/server/wrangler.json` and drops them. The zone apex must
+  not have conflicting A/AAAA records (Worker custom domains manage apex DNS themselves).
+- `www.fastestads.com` needs only a proxied CNAME + a Redirect Rule
+  (`hostname equals www.fastestads.com` → dynamic `concat("https://fastestads.com", http.request.uri.path)`,
+  301, preserve query string). Enable SSL/TLS → Always Use HTTPS so `http://` apex 301s.
 - `SITE_URL` must equal the canonical origin — `robots.txt`, canonical links, sitemap URLs and
   JSON-LD all derive from it.
+- Once the custom domain is verified, disable the public `workers.dev` route
+  (Workers → fastestads → Settings → Domains & Routes → workers.dev → disable). The app's
+  preview protection already serves `Disallow: /` robots there regardless.
 
 ## Preview protection
 
